@@ -38,23 +38,50 @@
 
           <div class="row mb-3">
             <div class="col-md-6">
-              <div class="form-check">
+              <label class="form-label d-block">Australian Resident?</label>
+              <div class="form-check form-check-inline">
                 <input
-                  type="checkbox"
+                  type="radio"
                   class="form-check-input"
-                  id="isAustralian"
+                  id="residentYes"
                   v-model="formData.isAustralian"
+                  @change="() => validateResident(false)"
+                  @blur="() => validateResident(true)"
                 />
-                <label class="form-check-label" for="isAustralian"> Australian Resident? </label>
+                <label class="form-check-label" for="residentYes"> Yes </label>
+              </div>
+              <div class="form-check form-check-inline">
+                <input
+                  type="radio"
+                  class="form-check-input"
+                  id="residentNo"
+                  value="no"
+                  v-model="formData.isAustralian"
+                  @change="() => validateResident(false)"
+                  @blur="() => validateResident(true)"
+                />
+                <label class="form-check-label" for="residentNo">No</label>
+              </div>
+              <div v-if="errors.resident" class="text-danger">
+                {{ errors.resident }}
               </div>
             </div>
             <div class="col-md-6">
               <label for="gender" class="form-label">Gender</label>
-              <select class="form-select" id="gender" v-model="formData.gender">
+              <select
+                class="form-select"
+                id="gender"
+                v-model="formData.gender"
+                @blur="() => validateGender(true)"
+                @change="() => validateGender(false)"
+              >
                 <option value="male">Male</option>
                 <option value="female">Female</option>
                 <option value="other">Other</option>
               </select>
+              <div v-if="errors.gender" class="text-danger">
+                {{ errors.gender }}
+              </div>
             </div>
           </div>
           <div class="mb-3">
@@ -64,7 +91,12 @@
               id="reason"
               rows="3"
               v-model="formData.reason"
+              @blur="() => validateReason(true)"
+              @input="() => validateReason(false)"
             ></textarea>
+            <div v-if="errors.reason" class="text-danger">
+              {{ errors.reason }}
+            </div>
           </div>
           <div class="text-center">
             <button type="submit" class="btn btn-primary me-2">Submit</button>
@@ -83,7 +115,7 @@ const emit = defineEmits(['submit'])
 const formData = ref({
   username: '',
   password: '',
-  isAustralian: false,
+  isAustralian: '',
   reason: '',
   gender: '',
 })
@@ -93,8 +125,17 @@ const formData = ref({
 const submitForm = () => {
   validateName(true)
   validatePassword(true)
+  validateResident(true)
+  validateGender(true)
+  validateReason(true)
 
-  if (!errors.value.username && !errors.value.password) {
+  if (
+    !errors.value.username &&
+    !errors.value.password &&
+    !errors.value.resident &&
+    !errors.value.gender &&
+    !errors.value.reason
+  ) {
     emit('submit', { ...formData.value })
     clearForm()
   }
@@ -104,12 +145,17 @@ const clearForm = () => {
   formData.value = {
     username: '',
     password: '',
-    isAustralian: false,
+    isAustralian: '',
     reason: '',
     gender: '',
   }
-  errors.value.username = null
-  errors.value.password = null
+  errors.value = {
+    username: null,
+    password: null,
+    resident: null,
+    gender: null,
+    reason: null,
+  }
 }
 
 const errors = ref({
@@ -149,6 +195,30 @@ const validatePassword = (blur) => {
     if (blur) errors.value.password = 'Password must contain at least one special character.'
   } else {
     errors.value.password = null
+  }
+}
+
+const validateResident = (blur) => {
+  if (!formData.value.isAustralian) {
+    if (blur) errors.value.resident = 'Please select Yes or No.'
+  } else {
+    errors.value.resident = null
+  }
+}
+
+const validateGender = (blur) => {
+  if (!formData.value.gender) {
+    if (blur) errors.value.gender = 'Please select a gender.'
+  } else {
+    errors.value.gender = null
+  }
+}
+
+const validateReason = (blur) => {
+  if (formData.value.reason.length < 10) {
+    if (blur) errors.value.reason = 'Reason must be at least 10 characters.'
+  } else {
+    errors.value.reason = null
   }
 }
 </script>
