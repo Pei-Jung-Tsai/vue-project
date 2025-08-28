@@ -1,12 +1,12 @@
 <template>
   <div class="container mt-5">
-    <div class="row">
-      <div class="col-md-8 offset-md-2">
+    <div class="row justify-content-center">
+      <div class="col-12 col-lg-8">
         <h1 class="text-center">User Information Form</h1>
 
         <form @submit.prevent="submitForm">
-          <div class="row mb-3">
-            <div class="col-md-6">
+          <div class="row g-3 mb-3">
+            <div class="col-12 col-sm-6">
               <label for="username" class="form-label">Username:</label>
               <input
                 type="text"
@@ -20,7 +20,7 @@
                 {{ errors.username }}
               </div>
             </div>
-            <div class="col-md-6">
+            <div class="col-12 col-sm-6">
               <label for="password" class="form-label">Password:</label>
               <input
                 type="password"
@@ -36,8 +36,8 @@
             </div>
           </div>
 
-          <div class="row mb-3">
-            <div class="col-md-6">
+          <div class="row g-3 mb-3">
+            <div class="col-12 col-sm-6">
               <label class="form-label d-block">Australian Resident?</label>
               <div class="form-check form-check-inline">
                 <input
@@ -66,7 +66,7 @@
                 {{ errors.resident }}
               </div>
             </div>
-            <div class="col-md-6">
+            <div class="col-12 col-sm-6">
               <label for="gender" class="form-label">Gender</label>
               <select
                 class="form-select"
@@ -75,6 +75,7 @@
                 @blur="() => validateGender(true)"
                 @change="() => validateGender(false)"
               >
+                <option value="" disabled>Select</option>
                 <option value="male">Male</option>
                 <option value="female">Female</option>
                 <option value="other">Other</option>
@@ -215,7 +216,7 @@ const validateGender = (blur) => {
 }
 
 const validateReason = (blur) => {
-  if (formData.value.reason.length < 10) {
+  if (formData.value.reason.trim().length < 10) {
     if (blur) errors.value.reason = 'Reason must be at least 10 characters.'
   } else {
     errors.value.reason = null
