@@ -1,8 +1,16 @@
 <script setup>
-import HelloWorld from './components/HelloWorld.vue'
-import TheWelcome from './components/TheWelcome.vue'
-import JSON from './components/JSON.vue'
+//import HelloWorld from './components/HelloWorld.vue'
+//import TheWelcome from './components/TheWelcome.vue'
+//import JSON from './components/JSON.vue'
 import Form from './components/Form.vue'
+import DataTable from 'primevue/datatable'
+import Column from 'primevue/column'
+import { ref } from 'vue'
+
+const users = ref([])
+const addUser = (user) => {
+  users.value.push(user)
+}
 </script>
 
 <template>
@@ -16,7 +24,15 @@ import Form from './components/Form.vue'
   <main>
     <!--<TheWelcome />-->
     <!--<JSON />-->
-    <Form />
+    <!--<Form />-->
+    <Form @submit="addUser" />
+    <DataTable :value="users" class="mt-4">
+      <Column field="username" header="Username" />
+      <Column field="password" header="Password" />
+      <Column field="isAustralian" header="Australian Resident" />
+      <Column field="gender" header="Gender" />
+      <Column field="reason" header="Reason" />
+    </DataTable>
   </main>
 </template>
 
